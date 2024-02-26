@@ -37,6 +37,9 @@
 
     <script type="module">
 
+        const rawTemplates = await getTemplates("/templates.html");
+        console.log(rawTemplates)
+        document.body.insertAdjacentHTML("beforeend", rawTemplates);
 
         const fruits = "Apple;Banana;Cherry;Date;Elderberry;Fig;Grape;Honeydew;Icaco;Jackfruit;Kiwi;Lemon;Mango;Nectarine;Orange;Papaya;Quince;Raspberry;Strawberry;Tomato;Ugli fruit;Voavanga;Watermelon;Ximenia;Yellow watermelon;Zucchini (Courgette);Apricot;Blackberry;Cantaloupe;Dragonfruit;Eggfruit;Feijoa;Guava;Huckleberry;Ita palm;Jujube;Kumquat;Lime;Mulberry;Nashi Pear;Olive;Peach;Quararibea cordata;Rambutan;Soursop;Tangerine;Uva Ursi;Velvet apple;White sapote;Xigua;Yuzu;Ziziphus mauritiana".split(";")
 
@@ -66,19 +69,18 @@
             parent.append(...element.childNodes);
         }
 
+
+
+        async function getTemplates(source) {
+            return await fetch(source).then(d => d.text());
+        }
+
+
+
+
     </script>
 
-    <template id="listItemTemplate">
-        <li></li>
-    </template>
 
-    <template id="listTemplate">
-
-        <h2>My favourit fruits</h2>
-        <ul id="fruitList">
-
-        </ul>
-    </template>
 
 
 
