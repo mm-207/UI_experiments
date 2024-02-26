@@ -35,48 +35,62 @@
         Client Demo @ 2024
     </footer>
 
-    <script type="module">
+    <!-- Because the type is set to application/json we can use this as a data source later -->
+    <script id="model" type="application/json">
+        {"fruits":"Apple;Banana;Cherry;Date;Elderberry;Fig;Grape;Honeydew;Icaco;Jackfruit;Kiwi;Lemon;Mango;Nectarine;Orange;Papaya;Quince;Raspberry;Strawberry;Tomato;Ugli fruit;Voavanga;Watermelon;Ximenia;Yellow watermelon;Zucchini (Courgette);Apricot;Blackberry;Cantaloupe;Dragonfruit;Eggfruit;Feijoa;Guava;Huckleberry;Ita palm;Jujube;Kumquat;Lime;Mulberry;Nashi Pear;Olive;Peach;Quararibea cordata;Rambutan;Soursop;Tangerine;Uva Ursi;Velvet apple;White sapote;Xigua;Yuzu;Ziziphus mauritiana"}
+    </script>
 
-        const rawTemplates = await getTemplates("/templates.html");
-        console.log(rawTemplates)
-        document.body.insertAdjacentHTML("beforeend", rawTemplates);
+    <script type="module"> // having the type set to module allows us to to async/await and we are cirtain of when the code gets run. 
 
-        const fruits = "Apple;Banana;Cherry;Date;Elderberry;Fig;Grape;Honeydew;Icaco;Jackfruit;Kiwi;Lemon;Mango;Nectarine;Orange;Papaya;Quince;Raspberry;Strawberry;Tomato;Ugli fruit;Voavanga;Watermelon;Ximenia;Yellow watermelon;Zucchini (Courgette);Apricot;Blackberry;Cantaloupe;Dragonfruit;Eggfruit;Feijoa;Guava;Huckleberry;Ita palm;Jujube;Kumquat;Lime;Mulberry;Nashi Pear;Olive;Peach;Quararibea cordata;Rambutan;Soursop;Tangerine;Uva Ursi;Velvet apple;White sapote;Xigua;Yuzu;Ziziphus mauritiana".split(";")
+        await insertTemplatesFrom("/templates.html") // Load templates from external file. 
+        const fruits = loadInternalData("model", "fruits", (data) => { return data.split(";") }); // Load the data in the element model, extract the fruits from the data, and convert to array  
 
+        // Get handles to the templates that we loaded inn to our document
         const listTemplate = document.querySelector("#listTemplate");
         const listItemTemplate = document.querySelector("#listItemTemplate");
 
+        // Display the first template 
         displayView(listTemplate, document.querySelector("main"))
 
         const list = document.querySelector("#fruitList")
-
+        // Add clones of the item template into the list template. 
         for (const fruit of fruits) {
-
             let item = cloneTemplate(listItemTemplate)
             item.querySelector("li").innerHTML = fruit;
-            console.log(item);
             list.appendChild(item);
         }
 
-
+        // Makes a clone of a template. 
         function cloneTemplate(template) {
             return template.content.cloneNode(true)
         }
 
-        function displayView(viewTemplate, parent) {
+        // Clones a larger template and adds it to a existing element.
+        function displayView(viewTemplate, targetElement) {
             const element = document.createElement("div");
-            element.append(viewTemplate.content.cloneNode(true));
-            parent.append(...element.childNodes);
+            element.append(cloneTemplate(template));
+            targetElement.append(...element.childNodes);
         }
 
-
-
-        async function getTemplates(source) {
-            return await fetch(source).then(d => d.text());
+        // This function loads templates from an external html file and adds them to the end of this document body.
+        async function insertTemplatesFrom(source) {
+            const templates = await fetch(source).then(d => d.text());
+            document.body.insertAdjacentHTML("beforeend", templates);
         }
 
+        // This function loads data from a internal source (i.e. a script tag with type application/json)
+        // The source is the id of the script element
+        // The attribute is the data attribut to extract (defaults to data)
+        // The parser is a function that can change the data before it is returnd. 
+        function loadInternalData(source, attribute = "data", parser) {
+            let data = JSON.parse(document.getElementById(source).text)[attribute];
 
+            if (parser !== undefined) {
+                data = parser(data);
+            }
 
+            return data;
+        }
 
     </script>
 
