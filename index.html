@@ -7,19 +7,6 @@
     <title>Client Test</title>
     <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
 
-    <style>
-        ul {
-            background-color: green;
-        }
-
-        ol {
-            background-color: yellowgreen;
-        }
-
-        ul>li:nth-child(2):hover {
-            background-color: antiquewhite;
-        }
-    </style>
 
 
 
@@ -31,6 +18,7 @@
     </header>
 
     <main>
+
         <!--
         <ul>
             <li>Apple</li>
@@ -42,37 +30,60 @@
 
     </main>
 
-    <script>
-
-        const fruits = "Apple;Banana;Cherry;Date;Elderberry;Fig;Grape;Honeydew;Icaco;Jackfruit;Kiwi;Lemon;Mango;Nectarine;Orange;Papaya;Quince;Raspberry;Strawberry;Tomato;Ugli fruit;Voavanga;Watermelon;Ximenia;Yellow watermelon;Zucchini (Courgette);Apricot;Blackberry;Cantaloupe;Dragonfruit;Eggfruit;Feijoa;Guava;Huckleberry;Ita palm;Jujube;Kumquat;Lime;Mulberry;Nashi Pear;Olive;Peach;Quararibea cordata;Rambutan;Soursop;Tangerine;Uva Ursi;Velvet apple;White sapote;Xigua;Yuzu;Ziziphus mauritiana".split(";")
-
-        /*
-        // DO NOT DO THIS ;)
-        let content = "<ul>";
-
-        for (const fruit of fruits) {
-            content += "<li>" + fruit + "</li>";
-        }
-
-        content += "</ul>";
-
-        document.querySelector("main").innerHTML = content;*/
-
-        const list = document.createElement("ul");
-
-        for (const fruit of fruits) {
-            const li = document.createElement("li");
-            li.innerHTML = fruit;
-            list.appendChild(li);
-        }
-
-        document.querySelector("main").appendChild(list);
-
-    </script>
 
     <footer>
         Client Demo @ 2024
     </footer>
+
+    <script type="module">
+
+
+        const fruits = "Apple;Banana;Cherry;Date;Elderberry;Fig;Grape;Honeydew;Icaco;Jackfruit;Kiwi;Lemon;Mango;Nectarine;Orange;Papaya;Quince;Raspberry;Strawberry;Tomato;Ugli fruit;Voavanga;Watermelon;Ximenia;Yellow watermelon;Zucchini (Courgette);Apricot;Blackberry;Cantaloupe;Dragonfruit;Eggfruit;Feijoa;Guava;Huckleberry;Ita palm;Jujube;Kumquat;Lime;Mulberry;Nashi Pear;Olive;Peach;Quararibea cordata;Rambutan;Soursop;Tangerine;Uva Ursi;Velvet apple;White sapote;Xigua;Yuzu;Ziziphus mauritiana".split(";")
+
+        const listTemplate = document.querySelector("#listTemplate");
+        const listItemTemplate = document.querySelector("#listItemTemplate");
+
+        displayView(listTemplate, document.querySelector("main"))
+
+        const list = document.querySelector("#fruitList")
+
+        for (const fruit of fruits) {
+
+            let item = cloneTemplate(listItemTemplate)
+            item.querySelector("li").innerHTML = fruit;
+            console.log(item);
+            list.appendChild(item);
+        }
+
+
+        function cloneTemplate(template) {
+            return template.content.cloneNode(true)
+        }
+
+        function displayView(viewTemplate, parent) {
+            const element = document.createElement("div");
+            element.append(viewTemplate.content.cloneNode(true));
+            parent.append(...element.childNodes);
+        }
+
+    </script>
+
+    <template id="listItemTemplate">
+        <li></li>
+    </template>
+
+    <template id="listTemplate">
+
+        <h2>My favourit fruits</h2>
+        <ul id="fruitList">
+
+        </ul>
+    </template>
+
+
+
+
+
 </body>
 
 </html>
